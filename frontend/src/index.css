@@ -1,0 +1,101 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html  { font-family: 'Inter', system-ui, sans-serif; scroll-behavior: smooth; }
+  body  { @apply bg-surface text-secondary antialiased; }
+  *     { @apply box-border; }
+}
+
+@layer components {
+  /* ── Buttons ─────────────────────────────────────────────────────── */
+  .btn-primary {
+    @apply inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-semibold text-sm
+           text-white shadow-sm
+           hover:shadow-md hover:-translate-y-px
+           active:scale-[0.97] active:shadow-sm
+           transition-all duration-150
+           disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none;
+    background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
+  }
+  .btn-primary:hover:not(:disabled) {
+    background: linear-gradient(135deg, #1D4ED8 0%, #1E40AF 100%);
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-semibold text-sm
+           text-slate-700 bg-white border border-slate-200 shadow-sm
+           hover:bg-slate-50 hover:border-slate-300 hover:-translate-y-px
+           active:scale-[0.97]
+           transition-all duration-150
+           disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none;
+  }
+  .dark .btn-secondary {
+    @apply bg-slate-800 border-slate-600 text-slate-200 hover:bg-slate-700;
+  }
+
+  /* ── Cards ───────────────────────────────────────────────────────── */
+  .card {
+    @apply bg-white rounded-2xl border border-slate-200 shadow-card;
+  }
+  .dark .card {
+    background-color: #1E293B;
+    border-color: #334155;
+  }
+
+  /* ── Input ───────────────────────────────────────────────────────── */
+  .input-base {
+    @apply w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl
+           placeholder:text-slate-400
+           focus:outline-none focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20
+           transition-all duration-150;
+  }
+  .dark .input-base {
+    background-color: #1E293B;
+    border-color: #334155;
+    color: #E2E8F0;
+  }
+  .dark .input-base:focus {
+    background-color: #0F172A;
+  }
+
+  /* ── Badges ──────────────────────────────────────────────────────── */
+  .badge        { @apply inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold; }
+  .badge-green  { @apply badge bg-emerald-50 text-emerald-700 border border-emerald-200; }
+  .badge-red    { @apply badge bg-red-50 text-red-600 border border-red-200; }
+  .badge-amber  { @apply badge bg-amber-50 text-amber-700 border border-amber-200; }
+  .badge-blue   { @apply badge bg-blue-50 text-blue-700 border border-blue-100; }
+  .badge-purple { @apply badge bg-purple-50 text-purple-700 border border-purple-200; }
+  .badge-slate  { @apply badge bg-slate-100 text-slate-600 border border-slate-200; }
+
+  /* ── Skeleton shimmer ────────────────────────────────────────────── */
+  .skeleton {
+    @apply rounded-lg;
+    background: linear-gradient(90deg, #F1F5F9 25%, #E2E8F0 50%, #F1F5F9 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.6s infinite linear;
+  }
+  .dark .skeleton {
+    background: linear-gradient(90deg, #1E293B 25%, #334155 50%, #1E293B 75%);
+    background-size: 200% 100%;
+  }
+
+  /* ── Section label ───────────────────────────────────────────────── */
+  .section-label {
+    @apply text-xs font-bold text-slate-400 uppercase tracking-widest;
+  }
+}
+
+/* ── Keyframes ───────────────────────────────────────────────────────── */
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+
+/* ── Scrollbar ───────────────────────────────────────────────────────── */
+::-webkit-scrollbar         { width: 5px; height: 5px; }
+::-webkit-scrollbar-track   { background: transparent; }
+::-webkit-scrollbar-thumb   { background: #CBD5E1; border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: #94A3B8; }
+.dark ::-webkit-scrollbar-thumb { background: #475569; }

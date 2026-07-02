@@ -1,0 +1,46 @@
+INVENTORY MOVEMENT LOG - December 2025
+======================================
+
+Date: 03Dec2025
+Model: R850
+Tag No: RWL14799
+Serial No: 382372003579
+Type/Description: 901-R850-WW00
+Direction: Received from Vendor
+Recipient/Team: Network Team
+Notes: Arrived with original packaging
+
+---
+
+Date: 05-Dec-2025
+Model: R750
+Tag No: RWL14800
+Serial No: 483920011230
+Type/Description: 901-R750-WW00
+Direction: Shipped
+Recipient/Team: Data Center B
+Notes: Sent for rack installation
+
+---
+
+Date: 2025/12/07
+Model: R850
+Tag No: RWL14801
+Serial No: 382372003600
+Type/Description: 901-R850-WW00
+Direction: Issued to Team
+Recipient/Team: Infrastructure Team
+Notes: Deployed to rack A-12
+Warranty End Date: 2028-12-07
+Rack Location: A-12
+
+---
+
+Date: December 10, 2025
+Model: SW200
+Tag No: RWL14802
+Serial No: 500291003010
+Type/Description: SW200-24P-POE
+Direction: Defective
+Recipient/Team: RMA Department
+Notes: Port 12 not functioning, sent for repair
