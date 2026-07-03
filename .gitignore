@@ -10,20 +10,18 @@ venv/
 credentials.json
 frontend/.env.local
 
-# .env.production is NOT secret (public Render URL) — intentionally committed
-# so Vercel picks it up during build without needing a dashboard variable
+# Force-include frontend env files (they contain no secrets — only public URLs)
+!frontend/.env.production
+!frontend/.env.development
 
-# Dev env file is safe to commit (no secrets)
-frontend/.env.development  
-
-# React/Vite
+# React / Vite
 frontend/node_modules/
 frontend/dist/
 
-# Runtime output — not stored in git (Render uses /tmp)
+# Runtime output
 output/
 uploads/
-credentials.json
+
 # Editor / OS
 .vscode/
 .DS_Store

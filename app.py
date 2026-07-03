@@ -53,14 +53,19 @@ app = FastAPI(
     version="2.0.0",
 )
 
-_raw_origins    = os.getenv("ALLOWED_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173")
-_allowed_origins = [o.strip() for o in _raw_origins.split(",") if o.strip()]
+_raw_origins     = os.getenv("ALLOWED_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173")
+_allowed_origins = [o.strip().rstrip("/") for o in _raw_origins.split(",") if o.strip()]
+
+# If ALLOWED_ORIGINS is not set at all, allow everything (safe default for debugging)
+if not _allowed_origins:
+    _allowed_origins = ["*"]
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=_allowed_origins,
-    allow_credentials=True,
-    allow_methods=["*"],
+    allow_origin_regex=r"https://.*\.vercel\.app",   # catch any Vercel preview URL too
+    allow_credentials=False,                          # must be False when using wildcard/regex
+    allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["*"],
 )
 
@@ -194,9 +199,15 @@ def download_excel():
 def get_schema():
     try:
         columns = get_schema_columns()
-    except EnvironmentError as exc:
-        raise HTTPException(status_code=500, detail=str(exc))
-    return {"columns": columns}
+        return {"columns": columns}
+    except EnvironmentError:
+        # Google Sheets not configured yet — return base schema so UI still renders
+        from services.schema_manager import MASTER_SCHEMA
+        return {"columns": list(MASTER_SCHEMA)}
+    except Exception as exc:
+        logger.warning("Schema fetch failed (returning fallback): %s", exc)
+        from services.schema_manager import MASTER_SCHEMA
+        return {"columns": list(MASTER_SCHEMA)}
 
 
 # ---------------------------------------------------------------------------
@@ -206,12 +217,16 @@ def get_schema():
 def stats():
     try:
         data = get_stats()
-    except EnvironmentError as exc:
-        raise HTTPException(status_code=500, detail=str(exc))
+        return data
+    except EnvironmentError:
+        from services.schema_manager import MASTER_SCHEMA
+        return {"total_records": 0, "files_processed": 0,
+                "total_columns": len(MASTER_SCHEMA), "new_columns_added": 0}
     except Exception as exc:
-        logger.error("Stats error: %s", exc)
-        raise HTTPException(status_code=500, detail="Could not read stats.")
-    return data
+        logger.warning("Stats fetch failed (returning fallback): %s", exc)
+        from services.schema_manager import MASTER_SCHEMA
+        return {"total_records": 0, "files_processed": 0,
+                "total_columns": len(MASTER_SCHEMA), "new_columns_added": 0}
 
 
 # ---------------------------------------------------------------------------
