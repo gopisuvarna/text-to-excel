@@ -1,11 +1,33 @@
 import axios from 'axios'
 
+// VITE_API_URL is injected at Vercel build time from:
+//   - frontend/.env.production  (committed, contains public Render URL)
+//   - OR Vercel Dashboard → Settings → Environment Variables → VITE_API_URL
+const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+
 const api = axios.create({
-  // Use VITE_API_URL env var so production builds point to the right host.
-  // Falls back to localhost:8000 for local development.
-  baseURL: import.meta.env.VITE_API_URL ?? 'http://localhost:8000',
-  timeout: 120_000,
+  baseURL: BASE_URL,
+  // 3 min — covers Render free-tier cold start (~60s) + LLM extraction time
+  timeout: 180_000,
 })
+
+// Intercept errors to provide cleaner messages
+api.interceptors.response.use(
+  (res) => res,
+  (err) => {
+    if (!err.response) {
+      // No response at all = network / CORS / server down
+      err.message =
+        'Cannot reach the backend. The server may be starting up (Render free tier takes ~60s). ' +
+        'Please wait a moment and try again.'
+    }
+    return Promise.reject(err)
+  }
+)
+
+/** Ping /health — use before first upload to wake Render if it's cold */
+export const pingHealth = () =>
+  api.get('/health', { timeout: 10_000 }).catch(() => null) // never throws
 
 /** POST /upload — accepts array of File objects */
 export const uploadFiles = (files, onProgress) => {

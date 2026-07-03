@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { MdUploadFile, MdOutlineFolderOpen, MdInsertDriveFile } from 'react-icons/md'
 import { HiCloudUpload } from 'react-icons/hi'
 import toast from 'react-hot-toast'
-import { uploadFiles } from '../services/api'
+import { uploadFiles, pingHealth } from '../services/api'
 import FileCard from './FileCard'
 import ProgressPanel from './ProgressPanel'
 import ResultsPanel from './ResultsPanel'
@@ -61,6 +61,11 @@ export default function UploadArea({ onSuccess }) {
     if (!files.length) return toast.error('Add at least one .txt file first.')
     setUploading(true); setResult(null); setUploadPct(0); setCurrentStep(0)
     setFileStatuses(Object.fromEntries(files.map((f) => [f.name, 'uploading'])))
+
+    // Ping the backend first — wakes Render free-tier if it's cold (~60s spin-up)
+    // This runs silently; errors are ignored since the real upload will surface them
+    await pingHealth()
+
     const timer = setInterval(() => setCurrentStep((s) => (s < 3 ? s + 1 : s)), 1400)
     try {
       const res  = await uploadFiles(files, (p) => setUploadPct(p))

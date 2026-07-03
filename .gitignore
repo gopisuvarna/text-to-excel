@@ -8,8 +8,10 @@ venv/
 # Secrets — never commit
 .env
 credentials.json
-frontend/.env.production
 frontend/.env.local
+
+# .env.production is NOT secret (public Render URL) — intentionally committed
+# so Vercel picks it up during build without needing a dashboard variable
 
 # Dev env file is safe to commit (no secrets)
 frontend/.env.development  

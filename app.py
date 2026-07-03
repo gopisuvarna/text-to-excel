@@ -215,11 +215,11 @@ def stats():
 
 
 # ---------------------------------------------------------------------------
-# GET /health
+# GET /health  (also used as wake-up ping for Render cold starts)
 # ---------------------------------------------------------------------------
 @app.get("/health", include_in_schema=False)
 def health_check():
-    return {"status": "ok"}
+    return {"status": "ok", "backend": "render"}
 
 
 # ---------------------------------------------------------------------------
