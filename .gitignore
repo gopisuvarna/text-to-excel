@@ -11,7 +11,7 @@ frontend/.env.production
 frontend/.env.local
 
 # Dev env file is safe to commit (no secrets)
-# frontend/.env.development  ← intentionally NOT ignored
+frontend/.env.development  
 
 # React/Vite
 frontend/node_modules/
