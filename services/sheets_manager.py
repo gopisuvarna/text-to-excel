@@ -59,17 +59,37 @@ _RETRY_BACKOFF  = 2   # seconds, doubles each retry
 def _build_client() -> gspread.Client:
     """
     Authenticate using service account credentials.
-    Tries GOOGLE_SERVICE_ACCOUNT_JSON (JSON string) first,
-    then falls back to GOOGLE_APPLICATION_CREDENTIALS (file path).
+
+    Priority:
+    1. GOOGLE_SERVICE_ACCOUNT_JSON env var — full JSON string (required on Render/Vercel)
+    2. GOOGLE_APPLICATION_CREDENTIALS env var — path to a local JSON file (local dev only)
+    3. credentials.json in the working directory (local dev fallback)
     """
     json_str = os.getenv("GOOGLE_SERVICE_ACCOUNT_JSON", "").strip()
-    if json_str:
-        info = json.loads(json_str)
-        creds = Credentials.from_service_account_info(info, scopes=SCOPES)
-    else:
-        path = os.getenv("GOOGLE_APPLICATION_CREDENTIALS", "credentials.json").strip()
-        creds = Credentials.from_service_account_file(path, scopes=SCOPES)
 
+    if json_str:
+        try:
+            info = json.loads(json_str)
+        except json.JSONDecodeError as exc:
+            raise EnvironmentError(
+                "GOOGLE_SERVICE_ACCOUNT_JSON is set but contains invalid JSON. "
+                "Make sure you pasted the full contents of credentials.json."
+            ) from exc
+        creds = Credentials.from_service_account_info(info, scopes=SCOPES)
+        return gspread.authorize(creds)
+
+    # Local dev fallback — file path
+    path = os.getenv("GOOGLE_APPLICATION_CREDENTIALS", "credentials.json").strip()
+    if not os.path.exists(path):
+        raise EnvironmentError(
+            "Google Sheets credentials are not configured.\n"
+            "  • On Render: set the GOOGLE_SERVICE_ACCOUNT_JSON environment variable "
+            "to the full JSON content of your service account key file.\n"
+            "  • Locally: place credentials.json in the project root, or set "
+            "GOOGLE_APPLICATION_CREDENTIALS to its path."
+        )
+
+    creds = Credentials.from_service_account_file(path, scopes=SCOPES)
     return gspread.authorize(creds)
 
 
