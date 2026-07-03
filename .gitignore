@@ -7,6 +7,7 @@ venv/
 
 # Secrets — never commit
 .env
+credentials.json
 frontend/.env.production
 frontend/.env.local
 
@@ -20,7 +21,7 @@ frontend/dist/
 # Runtime output — not stored in git (Render uses /tmp)
 output/
 uploads/
-
+credentials.json
 # Editor / OS
 .vscode/
 .DS_Store
