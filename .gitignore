@@ -3,19 +3,25 @@ __pycache__/
 *.pyc
 .venv/
 venv/
+.pytest_cache/
+
+# Secrets — never commit
 .env
+frontend/.env.production
+frontend/.env.local
+
+# Dev env file is safe to commit (no secrets)
+# frontend/.env.development  ← intentionally NOT ignored
 
 # React/Vite
 frontend/node_modules/
 frontend/dist/
 
-# Output folders
+# Runtime output — not stored in git (Render uses /tmp)
 output/
 uploads/
 
-# VS Code
+# Editor / OS
 .vscode/
-
-# OS files
 .DS_Store
-Thumbs.db
+*.log

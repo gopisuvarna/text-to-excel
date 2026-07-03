@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: inventory-ai-backend
+    runtime: python
+    region: oregon
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: GROQ_API_KEY
+        sync: false          # set manually in Render dashboard
+      - key: MASTER_EXCEL_PATH
+        value: /tmp/master_inventory.xlsx
+      - key: ALLOWED_ORIGINS
+        value: "https://text-to-excel-9qzx.vercel.app,http://localhost:5173"
+      - key: PYTHON_VERSION
+        value: "3.11"
